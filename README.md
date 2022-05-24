@@ -9,7 +9,7 @@ It counts the number of requests to the single server instance and also counts a
 
 You need to install following tools:
 
-- Docker with docker-compose: https://docs.docker.com/
+- Docker with docker-compose -> https://docs.docker.com/
 - Make:
     
     For Linux Distro:  
@@ -19,7 +19,7 @@ You need to install following tools:
 
     For Windows: 
     
-    1. Install chocolatey https://chocolatey.org/install 
+    1. Install chocolatey -> https://chocolatey.org/install 
     
     2. Run command
     ```
@@ -27,8 +27,15 @@ You need to install following tools:
     ``` 
 
     For MacOS: 
+    
+    1. Xcode
     ```
     xcode-select --install or brew install make
+    ```
+
+    2. Brew -> https://brew.sh/index_pl
+    ```
+    brew install make
     ```
 
 ## RUN & BUILD
@@ -63,6 +70,8 @@ It is used as key-value store to saving total number of requests from all instan
 In project was used Redis, as key-value store for saving total numbers of requests on all server instances. For easier development Redis package was used as a solution for connecting to database.
 
 https://github.com/go-redis/redis
+
+
 
 
 
