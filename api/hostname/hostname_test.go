@@ -12,8 +12,8 @@ func TestOverwriteHostnameBasic(t *testing.T) {
 	if err != nil {
 		t.Errorf("Something wrong with getting hostname")
 	}
-	ans := OverwriteHostname(host)
-	if ans != "host0" {
-		t.Errorf("OverwriteHostname(host) = %s; want host0", ans)
+	ans, _ := OverwriteHostname(host)
+	if ans != "host1" {
+		t.Errorf("OverwriteHostname(host) = %s; want host1", ans)
 	}
 }
