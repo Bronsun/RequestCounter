@@ -1,0 +1,47 @@
+version: "3.9"
+services:
+  
+  web:
+    build: 
+      context: .
+      args:
+        - PORT=${PORT}
+    environment:
+      - WEB_PORT=${WEB_PORT}
+      - REDIS_DB_PORT=${REDIS_DB_PORT}
+      - REDIS_DB_ADDR=${REDIS_DB_ADDR}
+      - REDIS_DB_PASSWORD=${REDIS_DB_PASSWORD}
+    volumes:
+     - .:/app
+    links:
+     - db
+    depends_on:
+     - db
+    
+    deploy:
+      mode: replicated
+      replicas: 3
+  
+  db:
+    image: redis
+    environment:
+      - REDIS_DB_PORT=${REDIS_DB_PORT}
+      - REDIS_DB_ADDR=${REDIS_DB_ADDR}
+      - REDIS_DB_PASSWORD=${REDIS_DB_PASSWORD}
+    ports:
+     - '${REDIS_DB_PORT}:${REDIS_DB_PORT}'
+  
+  nginx:
+    image: nginx:latest
+    environment:
+      - PORT=${PORT}
+      - ADDR=${ADDR}
+    volumes:
+      - ./proxy/nginx.conf:/nginx.conf.template:ro
+      - ./proxy/entrypoint.sh:/entrypoint.sh
+    entrypoint: ["sh","/entrypoint.sh"]
+    command: ["nginx", "-g", "daemon off;"]
+    depends_on:
+      - web
+    ports:
+      - '${PORT}:${PORT}'
