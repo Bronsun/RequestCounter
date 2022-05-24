@@ -7,6 +7,7 @@ import (
 	"sync"
 
 	"github.com/Bronsun/RequestCounter/api/counter"
+	"github.com/Bronsun/RequestCounter/api/hostname"
 	"github.com/Bronsun/RequestCounter/db"
 )
 
@@ -17,12 +18,14 @@ var mutex = &sync.Mutex{}
 // Return of the logic is "text/plain" response with information about total number of requests to the instance and cluster
 func RequestHandler(w http.ResponseWriter, r *http.Request) {
 	mutex.Lock()
-	host, err := os.Hostname()
+	store := db.RedisConnect()
+
+	hosts, err := store.Get("hostname").Result()
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	store := db.RedisConnect()
+	host := hostname.OverwriteHostname(hosts)
 
 	counter.IncrementRequests()
 
@@ -36,8 +39,7 @@ func RequestHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 	}
 	w.Header().Set("Content-Type", "text/plain")
-	_, err = fmt.Fprintf(w, "You are talking to instance %s.\nThis is request %s to this instance and request %s to the cluster.\n", host, counter.GetRequests(), clustercount)
+	_, err = fmt.Fprintf(w, "You are talking to instance %s%s.\nThis is request %d to this instance and request %s to the cluster.\n", host, os.Getenv("WEB_PORT"), counter.GetRequests(), clustercount)
 
 	mutex.Unlock()
-
 }
