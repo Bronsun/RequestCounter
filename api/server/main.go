@@ -16,7 +16,11 @@ func main() {
 	if err != nil {
 		fmt.Println(err)
 	}
-	store := db.RedisConnect()
+	store, err := db.RedisConnect()
+	if err != nil {
+		fmt.Println(err)
+	}
+
 	store.Append("hostname", host+",")
 
 	s := http.Server{Addr: os.Getenv("WEB_PORT")}

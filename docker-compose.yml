@@ -11,6 +11,7 @@ services:
       - REDIS_DB_PORT=${REDIS_DB_PORT}
       - REDIS_DB_ADDR=${REDIS_DB_ADDR}
       - REDIS_DB_PASSWORD=${REDIS_DB_PASSWORD}
+      - REDIS_DB=${REDIS_DB}
     volumes:
      - .:/app
     links:
@@ -24,10 +25,6 @@ services:
   
   db:
     image: redis
-    environment:
-      - REDIS_DB_PORT=${REDIS_DB_PORT}
-      - REDIS_DB_ADDR=${REDIS_DB_ADDR}
-      - REDIS_DB_PASSWORD=${REDIS_DB_PASSWORD}
     ports:
      - '${REDIS_DB_PORT}:${REDIS_DB_PORT}'
   
