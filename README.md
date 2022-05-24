@@ -3,6 +3,8 @@ Request Counter is a simple solution for counting requests on multipale server i
 
 It counts the number of requests to the single server instance and also counts all requests to cluster using Redis as the main key-value database. Docker-compose is used as a conterization solution, but also it simulate 3 instances using Replica method. NGINX is used as main reverse proxy solution.
 
+![](showcase.gif)
+
 ## Requirements
 
 You need to install following tools:
@@ -33,7 +35,17 @@ You need to install following tools:
 
 Build project in docker:
 ```
-make dockerbuild
+make build-docker
+```
+
+Run project in docker
+```
+make run-docker
+```
+
+Clear docker containers
+```
+make clean-docker
 ```
 
 ## Tools used
