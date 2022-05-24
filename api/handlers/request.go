@@ -24,7 +24,7 @@ func RequestHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 	}
 
-	hosts, err := store.Get("hostname").Result()
+	hosts, err := store.Get(db.HostnameKey).Result()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Println(err)
@@ -38,7 +38,7 @@ func RequestHandler(w http.ResponseWriter, r *http.Request) {
 
 	counter.IncrementRequests()
 
-	clustercounter, err := db.SaveRequests("clustercount", store)
+	clustercounter, err := db.SaveRequests(db.ClustercountKey, store)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Println(err)

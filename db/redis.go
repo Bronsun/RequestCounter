@@ -15,6 +15,11 @@ var (
 	db, _    = strconv.Atoi(os.Getenv("REDIS_DB"))
 )
 
+const (
+	ClustercountKey = "clustercount"
+	HostnameKey     = "hostname"
+)
+
 // RedisConnect connect to Redis database
 func RedisConnect() (*redis.Client, error) {
 	Client = redis.NewClient(&redis.Options{
