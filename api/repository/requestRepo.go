@@ -1,8 +1,6 @@
 package repository
 
 import (
-	"strconv"
-
 	"github.com/go-redis/redis"
 )
 
@@ -32,7 +30,7 @@ func (r *RequestRepo) SaveRequest(key string) (int64, error) {
 		clustercount = val
 
 		_, err = tx.Pipelined(func(pipe redis.Pipeliner) error {
-			pipe.Set(key, strconv.FormatInt(clustercount+1, 10), 0)
+			pipe.Incr(key)
 			return nil
 		})
 		return err
