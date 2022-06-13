@@ -22,18 +22,21 @@ func RequestHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Println(err)
+		return
 	}
 
 	hosts, err := store.Get(db.HostnameKey).Result()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Println(err)
+		return
 	}
 
 	host, err := hostname.OverwriteHostname(hosts)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Println(err)
+		return
 	}
 
 	counter.IncrementRequests()
@@ -42,6 +45,7 @@ func RequestHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Println(err)
+		return
 	}
 
 	w.WriteHeader(http.StatusOK)
