@@ -7,32 +7,30 @@ import (
 	"sync"
 
 	"github.com/Bronsun/RequestCounter/api/counter"
-	"github.com/Bronsun/RequestCounter/api/hostname"
-	"github.com/Bronsun/RequestCounter/db"
+	"github.com/Bronsun/RequestCounter/api/models"
 )
 
 var mutex sync.Mutex
 
-// RequestHanlder logic for main endpoint
+// RequestHandler holds everything that controller needs
+type RequestHandler struct {
+	requestRepo models.RequestRepository
+}
+
+// NewReuqestHandler return a nen RequestHandler
+func NewRequestHandler(requestRepo models.RequestRepository) *RequestHandler {
+	return &RequestHandler{
+		requestRepo: requestRepo,
+	}
+}
+
+// RequestCounter logic for main endpoint
 // It counts all requests on the instances and save total number of requests to cluster in Redis store
 // Return of the logic is "text/plain" response with information about total number of requests to the instance and cluster
-func RequestHandler(w http.ResponseWriter, r *http.Request) {
+func (h *RequestHandler) RequestCounter(w http.ResponseWriter, r *http.Request) {
 	mutex.Lock()
-	store, err := db.RedisConnect()
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Println(err)
-		return
-	}
 
-	hosts, err := store.Get(db.HostnameKey).Result()
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Println(err)
-		return
-	}
-
-	host, err := hostname.OverwriteHostname(hosts)
+	host, err := os.Hostname()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Println(err)
@@ -41,7 +39,7 @@ func RequestHandler(w http.ResponseWriter, r *http.Request) {
 
 	counter.IncrementRequests()
 
-	clustercounter, err := db.SaveRequests(db.ClustercountKey, store)
+	clustercounter, err := h.requestRepo.SaveRequest(models.Key)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Println(err)

@@ -7,26 +7,23 @@ import (
 	"os"
 
 	"github.com/Bronsun/RequestCounter/api/handlers"
+	"github.com/Bronsun/RequestCounter/api/repository"
 	"github.com/Bronsun/RequestCounter/db"
 )
 
 func main() {
 
-	host, err := os.Hostname()
-	if err != nil {
-		fmt.Println(err)
-	}
-	store, err := db.RedisConnect()
+	db, err := db.RedisConnect()
+
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	store.Append("hostname", host+",")
+	requestRepo := repository.NewRequestRepo(db)
+	h := handlers.NewRequestHandler(requestRepo)
 
 	s := http.Server{Addr: os.Getenv("WEB_PORT")}
-
-	http.HandleFunc("/", handlers.RequestHandler)
-
+	http.HandleFunc("/", h.RequestCounter)
 	log.Fatal(s.ListenAndServe())
 
 }
