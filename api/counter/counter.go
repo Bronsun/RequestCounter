@@ -8,8 +8,3 @@ var requests int64 = 0
 func IncrementRequests() int64 {
 	return atomic.AddInt64(&requests, 1)
 }
-
-// GetRequests returns the current value of requests
-func GetRequests() int64 {
-	return atomic.LoadInt64(&requests)
-}
